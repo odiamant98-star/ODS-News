@@ -5,99 +5,121 @@ import urllib.parse
 import time
 from datetime import datetime
 
-# --- הגדרות עיצוב מתקדמות: פונט מודרני, חלוניות וצבעים בהירים ---
+# --- הגדרות עיצוב עדינות לעיניים ועיצוב טאבים ---
 st.set_page_config(page_title="ODS", page_icon="📊", layout="wide")
 st.markdown("""
     <style>
-    /* ייבוא פונט מודרני (Rubik) מגוגל פונטס */
     @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap');
     
-    .stApp, .stMarkdown, p, h1, h2, h3, h4, h5, h6, li, span, div, input { 
+    .stApp, .stMarkdown, p, li, span, div, input { 
         direction: rtl !important; 
         text-align: right !important; 
         font-family: 'Rubik', sans-serif !important; 
+        color: #2D3748 !important; 
     }
     
-    /* צבע רקע כללי בהיר ורך */
-    .stApp {
-        background-color: #f3f6f9;
-    }
+    .stApp { background-color: #E8ECEF !important; }
     
-    /* סרגל צד נקי ולבן */
     [data-testid="stSidebar"] { 
-        background-color: #ffffff !important; 
-        border-left: 1px solid #e2e8f0;
+        background-color: #DFE4E8 !important; 
+        border-left: 1px solid #CBD5E1;
     }
     
-    /* עיצוב כפתור ההפעלה למודרני ומעוגל */
+    h1, h2, h3, h4, h5, h6 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    
+    /* עיצוב הטאבים (לשוניות) */
+    button[data-baseweb="tab"] {
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        background-color: #DFE4E8 !important;
+        border-radius: 8px 8px 0 0 !important;
+        margin-left: 8px !important;
+        border: 1px solid #CBD5E1 !important;
+        border-bottom: none !important;
+        padding: 10px 20px !important;
+    }
+    button[aria-selected="true"] {
+        background-color: #F1F4F6 !important;
+        color: #2B6CB0 !important;
+        border-bottom: 3px solid #2B6CB0 !important;
+        z-index: 1;
+    }
+    
     .stButton>button { 
         width: 100%; 
         font-weight: 600; 
-        border-radius: 20px !important;
-        background: linear-gradient(135deg, #007aff, #005bb5) !important;
-        color: white !important;
+        border-radius: 12px !important;
+        background: #2B6CB0 !important;
+        color: #ffffff !important;
         border: none !important;
-        box-shadow: 0 4px 15px rgba(0, 122, 255, 0.2) !important;
+        box-shadow: 0 4px 10px rgba(43, 108, 176, 0.2) !important;
         transition: 0.3s;
     }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35) !important;
-    }
+    .stButton>button:hover { background: #2c5282 !important; }
     
-    /* --- קסם החלוניות (Cards) --- */
-    /* לוקח את הכותרת של הכתבה והופך אותה לראש החלונית */
     h3 {
-        background-color: #ffffff;
+        background-color: #F1F4F6 !important; 
         padding: 18px 20px 10px 20px;
         border-radius: 16px 16px 0 0;
         margin-top: 25px !important;
         margin-bottom: 0px !important;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #CBD5E1;
         border-bottom: none;
-        color: #1e293b !important;
-        font-size: 1.15rem !important;
     }
-    h3 a { text-decoration: none !important; color: #007aff !important; }
     
-    /* לוקח את גוף הכתבה ועוטף אותו בחלק התחתון של החלונית עם צללית */
     h3 + ul {
-        background-color: #ffffff;
+        background-color: #F1F4F6 !important;
         padding: 10px 40px 20px 20px !important;
         border-radius: 0 0 16px 16px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #CBD5E1;
         border-top: none;
         margin-top: 0 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        list-style-type: none !important; /* הסרת הנקודות מהרשימה כדי שהעיצוב יהיה נקי */
     }
     
-    /* מסתיר את קווי ההפרדה הרגילים כי עכשיו יש לנו חלוניות */
+    /* עיצוב הלינק לכתבה */
+    a {
+        color: #2B6CB0 !important;
+        font-weight: 600;
+        text-decoration: none;
+        background-color: #E2E8F0;
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-block;
+        margin-top: 8px;
+        transition: 0.2s;
+    }
+    a:hover { background-color: #CBD5E1; text-decoration: none !important; }
+    
     hr { display: none; }
     
-    /* עיצוב בועות הצ'אט כחלוניות שיחה */
     [data-testid="stChatMessage"] {
-        background-color: #ffffff;
+        background-color: #F1F4F6 !important;
         border-radius: 16px;
         padding: 15px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-        border: 1px solid #e2e8f0;
+        border: 1px solid #CBD5E1;
         margin-bottom: 12px;
     }
     
-    /* עיצוב שורת החיפוש */
     .stTextInput>div>div>input {
+        background-color: #F1F4F6 !important;
         border-radius: 12px !important;
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #CBD5E1 !important;
         padding: 10px !important;
+        color: #000000 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- חיבור מאובטח לג'מיני (תומך גם בענן וגם במחשב) ---
+# --- חיבור מאובטח לג'מיני ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
 except KeyError:
-    # מיועד להרצה המקומית על המחשב שלך
     API_KEY = "AIzaSyBCsaiu6uyALk1bph44Lnw3FUfiWu1JZJs" 
 
 genai.configure(api_key=API_KEY)
@@ -167,24 +189,31 @@ if st.button("🔄 חפש, מיין ונתח עכשיו", type="primary"):
             st.error("לא נמצאו כתבות כלל עבור נושאים אלו בחודש האחרון.")
         else:
             prompt = f"""
-            אתה אנליסט השקעות בכיר. עליך להכין בריף המחולק לשוק המקומי ולשווקים גלובליים, בהתבסס על הכתבות שנאספו בחודש האחרון.
+            אתה אנליסט השקעות בכיר. עליך להכין בריף המחולק לשוק המקומי ולשווקים גלובליים.
             
             חוקים נוקשים:
-            1. הכתבות שמועברות אליך מטה **כבר ממוינות מהחדשה ביותר לישנה ביותר**. חובה עליך לשמור על סדר כרונולוגי זה בדיוק כפי שהוא מופיע.
-            2. בחר עד 5 כתבות מקומיות ועד 5 כתבות גלובליות. אם אין מספיק, הצג רק את מה שיש.
-            3. חובה לציין ליד כל כותרת את המקור ואת התאריך שהתקבל.
-            4. תרגם את הכתבות הגלובליות לעברית פיננסית.
+            1. הכתבות שמועברות אליך מטה **כבר ממוינות מהחדשה ביותר לישנה ביותר**. שמור על סדר כרונולוגי זה.
+            2. בחר עד 5 כתבות מקומיות ועד 5 כתבות גלובליות.
+            3. תרגם את הכתבות הגלובליות לעברית פיננסית.
+            4. **חובה:** הפרד בין החלק המקומי לגלובלי באמצעות השורה המדויקת הבאה בלבד (בלי תוספות, כותרות או סימנים אחרים לידה):
+            ---SPLIT---
             
             פורמט נדרש לכל כתבה:
-            ### [כותרת הכתבה]({"{קישור}"}) *(מקור: מזהה המקור | פורסם ב: תאריך)*
+            ### כותרת הכתבה *(מקור: מזהה המקור | פורסם ב: תאריך)*
             * **שורת מחץ:** תקציר של 2-3 משפטים.
             * **משמעות לשוק:** ההשפעה האפשרית על התיקים.
-            ---
+            * 🔗 [למעבר לכתבה המלאה לחץ כאן]({"{קישור}"})
+            <br>
             
-            רשימת חדשות מקומיות גולמית (מסודר מהחדש לישן):
+            מבנה התשובה הנדרש בדיוק:
+            [הכתבות המקומיות כאן]
+            ---SPLIT---
+            [הכתבות הגלובליות כאן]
+            
+            רשימת חדשות מקומיות גולמית:
             {local_news_text}
 
-            רשימת חדשות גלובליות גולמית (מסודר מהחדש לישן):
+            רשימת חדשות גלובליות גולמית:
             {global_news_text}
             """
             
@@ -195,10 +224,25 @@ if st.button("🔄 חפש, מיין ונתח עכשיו", type="primary"):
             except Exception as e:
                 st.error(f"שגיאה בתקשורת עם ג'מיני: {e}")
 
-# --- תצוגת הבריף והצ'אט ---
+# --- תצוגת הבריף (עם הטאבים) והצ'אט ---
 if st.session_state.brief_content:
     st.success("הבריף מוכן!")
-    st.markdown(st.session_state.brief_content)
+    
+    # פיצול התוכן לטאבים
+    content = st.session_state.brief_content
+    if "---SPLIT---" in content:
+        parts = content.split("---SPLIT---")
+        if len(parts) == 2:
+            tab1, tab2 = st.tabs(["🇮🇱 שוק מקומי", "🌍 שווקים גלובליים"])
+            with tab1:
+                st.markdown(parts[0].strip(), unsafe_allow_html=True)
+            with tab2:
+                st.markdown(parts[1].strip(), unsafe_allow_html=True)
+        else:
+            # מקרה חירום בו ג'מיני התבלבל במבנה
+            st.markdown(content, unsafe_allow_html=True)
+    else:
+        st.markdown(content, unsafe_allow_html=True)
     
     st.divider()
     st.subheader("💬 התייעץ עם האנליסט שלך")
